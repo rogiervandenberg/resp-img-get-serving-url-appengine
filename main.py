@@ -18,11 +18,13 @@
 
 """Do One Thing: Bring me a serving url for resp pictures"""
 
-__author__ = 'justin@justinribeiro.com (Justin Ribeiro)'
+__author__ = 'justin@justinribeiro.com (Justin Ribeiro) / github@rogiervandenberg.nl (Rogier van den Berg)'
 
 import json
 import random
 import string
+import ConfigParser
+import logging
 
 from flask import Flask
 from flask import request
@@ -36,11 +38,28 @@ resppicturehereicome.secret_key = ''.join(random.choice(string.ascii_uppercase +
 
 @resppicturehereicome.route('/serveurl', methods=['POST'])
 def serveurl():
-	"""I return to you a serving url"""
-	image = request.form['image']
-	bucket = request.form['bucket']
 
-	filename = (bucket + "/" +image)
-	gskey = blobstore.create_gs_key("/gs/" + filename)
-	servingImage = images.get_serving_url(gskey)
-	return(servingImage)
+	config = ConfigParser.RawConfigParser(allow_no_value=True)
+	config.read('config.ini')
+	
+	try:
+		if config.get("auth", "key") == request.form['key']:
+			image = request.form['image']
+			bucket = request.form['bucket']
+
+			logging.info('Create Serving URL for ' + image)
+
+			filename = (bucket + "/" +image)
+			gskey = blobstore.create_gs_key("/gs/" + filename)
+			servingImage = images.get_serving_url(gskey)
+			return(servingImage)
+		else:
+			return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
+	except:
+		return json.dumps({'error': 'Not all necessary input provided'}), 500, {'ContentType':'application/json'}
+
+	
+		
+	
+
+	
