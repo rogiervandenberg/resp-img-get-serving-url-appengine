@@ -18,14 +18,15 @@ git clone https://github.com/rogiervandenberg/resp-img-get-serving-url-appengine
 ```
 pip install -r requirements.txt -t lib
 ```
-3. Deploy to App Engine: `gcloud app deploy`
+4. Make your own key entry in config.ini
+5. Deploy to App Engine: `gcloud app deploy`
 
 ### Getting started
 
 Getting a serving url:
 
 ```
-curl --data "bucket=myawesomebucket&image=rock-bench-knights-ferry.jpg" SOMETHING.appspot.com/serveurl
+curl --data "bucket=myawesomebucket&image=rock-bench-knights-ferry.jpg?key=123" SOMETHING.appspot.com/serveurl
 ```
 
 Which will return a url that looks something like:
