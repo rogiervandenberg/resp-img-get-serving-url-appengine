@@ -6,50 +6,26 @@ Google Cloud storage can do a lot of interesting things by itself. If you combin
 ### Prerequisites
 
 1. You can either create a new project in the [Google Developers Console](https://console.developers.google.com) and use that or you can integrate the very basic route into an existing project. Up to you.
-2. You'll need the [Google Cloud SDK](https://developers.google.com/cloud/sdk/) to be able to use gsutil.
+2. You'll need the [Google Cloud SDK](https://developers.google.com/cloud/sdk/) to be able to use gcloud deploy.
 
 ### Setup
 
 1. Clone this repo
 ```
-git clone https://github.com/justinribeiro/resp-img-get-serving-url-appengine.git
+git clone https://github.com/rogiervandenberg/resp-img-get-serving-url-appengine.git
 ```
 2. Install the requirements so that our project will run (Flask, et cetera)
 ```
 pip install -r requirements.txt -t lib
 ```
-3. Change the application project id in app.yaml.
-4. Deploy to App Engine (either via appcfg or via Git hook)
+3. Deploy to App Engine: `gcloud app deploy`
 
 ### Getting started
 
-1. Let's presume that we don't use our default bucket for our recently created project, but rather need to create a new one:
+Getting a serving url:
 
 ```
-gsutil mb gs://myawesomebucket-pub/
-```
-
-2. Now let's set the base acl for the bucket:
-```
-gsutil acl set public-read gs://myawesomebucket-pub/
-```
-
-3. Let's copy a file to the bucket:
-```
-gsutil cp rock-bench-knights-ferry.jpg gs://myawesomebucket-pub/
-```
-
-4. Now, if we just want to serve our file from GCS, we can set the acl on our uploaded file (though for the serving url, we don't have to):
-```
-gsutil acl set public-read gs://myawesomebucket-pub/rock-bench-knights-ferry.jpg
-```
-
-5. Awesome! Our file is available via ```https://storage.googleapis.com/{bucket-name}/{file-name}``` but that's not what we want.
-
-6. Now let's getting a serving url:
-
-```
-curl --data "bucket=myawesomebucket-pub&image=rock-bench-knights-ferry.jpg" SOMETHING.appspot.com/serveurl
+curl --data "bucket=myawesomebucket&image=rock-bench-knights-ferry.jpg" SOMETHING.appspot.com/serveurl
 ```
 
 Which will return a url that looks something like:
@@ -57,18 +33,6 @@ Which will return a url that looks something like:
 ```
 https://lh5.ggpht.com/rCGu26RVMiLkEepYZhhfmxMxsKrb29wUFGfqirbErbNvmLqVlr7mFvXILGQrSZ_u53D4OpMSh_wN3lUoh224RhWWFJlFQA
 ```
-
-7. Now we can drop this into our ```<picture>``` tag as by using the =sXXX argument on the url to give us happy correct sized images.
-
-```
-<picture>
-	<source srcset="https://lh5.ggpht.com/rCGu26RVMiLkEepYZhhfmxMxsKrb29wUFGfqirbErbNvmLqVlr7mFvXILGQrSZ_u53D4OpMSh_wN3lUoh224RhWWFJlFQA=s1000" media="(min-width: 1000px)">
-	<source srcset="https://lh5.ggpht.com/rCGu26RVMiLkEepYZhhfmxMxsKrb29wUFGfqirbErbNvmLqVlr7mFvXILGQrSZ_u53D4OpMSh_wN3lUoh224RhWWFJlFQA=s800" media="(min-width: 800px)">
-	<source srcset="https://lh5.ggpht.com/rCGu26RVMiLkEepYZhhfmxMxsKrb29wUFGfqirbErbNvmLqVlr7mFvXILGQrSZ_u53D4OpMSh_wN3lUoh224RhWWFJlFQA=s400">
-	<img srcset="https://lh5.ggpht.com/rCGu26RVMiLkEepYZhhfmxMxsKrb29wUFGfqirbErbNvmLqVlr7mFvXILGQrSZ_u53D4OpMSh_wN3lUoh224RhWWFJlFQA=s400" alt="A peaceful day down at Knights Ferry.">
-</picture>
-```
-You can see this in action via the following JSFiddle: [http://jsfiddle.net/justinribeiro/kTVHd/](http://jsfiddle.net/justinribeiro/kTVHd/). The fiddle uses the very awesome [Picturefill image polyfill](https://github.com/scottjehl/picturefill).
 
 ### Gotcha's and things
 
@@ -80,4 +44,6 @@ You can see this in action via the following JSFiddle: [http://jsfiddle.net/just
 
 3. The serving url is inherently public (no support for private serving urls).
 
-4. Probably other things that I'm forgetting at the moment.
+4. It is not possible to remove an image from the Google Cache
+
+5. Probably other things that I'm forgetting at the moment.
