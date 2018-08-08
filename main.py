@@ -42,21 +42,22 @@ def serveurl():
 	config = ConfigParser.RawConfigParser(allow_no_value=True)
 	config.read('config.ini')
 	
-	try:
-		if config.get("auth", "key") == request.form['key']:
-			image = request.form['image']
-			bucket = request.form['bucket']
+	expectedKey = config.get("auth", "key")
+	receivedKey = request.form['key']
+	
+	if expectedKey == receivedKey:
+		image = request.form['image']
+		bucket = request.form['bucket']
 
-			logging.info('Create Serving URL for ' + image)
+		logging.info('Create Serving URL for ' + image)
 
-			filename = (bucket + "/" +image)
-			gskey = blobstore.create_gs_key("/gs/" + filename)
-			servingImage = images.get_serving_url(gskey)
-			return(servingImage)
-		else:
-			return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
-	except:
-		return json.dumps({'error': 'Not all necessary input provided'}), 500, {'ContentType':'application/json'}
+		filename = (bucket + "/" +image)
+		gskey = blobstore.create_gs_key("/gs/" + filename)
+		servingImage = images.get_serving_url(gskey)
+		return(servingImage)
+	else:
+		return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
+	
 
 	
 		
