@@ -54,6 +54,9 @@ def serveurl():
 		filename = (bucket + "/" +image)
 		gskey = blobstore.create_gs_key("/gs/" + filename)
 		servingImage = images.get_serving_url(gskey)
+
+		logging.info('Serving URL is ' + servingImage)
+
 		return(servingImage)
 	else:
 		return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
