@@ -112,3 +112,20 @@ Forcing PNG, WebP and GIF outputs can work in combination with circular crops fo
 
 Found at: https://stackoverflow.com/questions/25148567/list-of-all-the-app-engine-images-service-get-serving-url-uri-options?answertab=votes#tab-top 
 See also https://code-examples.net/en/q/17fbc97 for more missing params
+
+
+### Errors?
+DistutilsOptionError: must supply either home or prefix/exec-prefix — not both when building?
+See: https://stackoverflow.com/questions/24257803/distutilsoptionerror-must-supply-either-home-or-prefix-exec-prefix-not-both
+
+Are you using OS X and Homebrew?  The Homebrew python page https://github.com/Homebrew/brew/blob/master/docs/Homebrew-and-Python.md calls out a known issue with pip and a work around.
+
+Worked for me.
+
+> You can make this "empty prefix" the default by adding a
+> ~/.pydistutils.cfg file with the following contents:
+> 
+>     [install]
+>     prefix=
+
+__Edit:__ Do not use this Homebrew recommended option, it _will break normal pip operations_.
