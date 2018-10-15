@@ -26,8 +26,12 @@ pip install -r requirements.txt -t lib
 Getting a serving url:
 
 ```
-curl --data "bucket=myawesomebucket&image=rock-bench-knights-ferry.jpg?key=123" SOMETHING.appspot.com/serveurl
-curl --data "bucket=myawesomebucket&image=rock-bench-knights-ferry.jpg?key=123" SOMETHING.appspot.com/serveurl
+
+curl -X POST \
+  https://APPNAME.appspot.com/serveurl \
+  -F bucket=BUCKETNAME \
+  -F image=FILENAME \
+  -F key=123
 ```
 
 Which will return a url that looks something like:
