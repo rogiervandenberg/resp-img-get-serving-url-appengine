@@ -42,6 +42,37 @@ def serveurl():
 	config = ConfigParser.RawConfigParser(allow_no_value=True)
 	config.read('config.ini')
 	
+	try:
+		expectedKey = config.get("auth", "key")
+		receivedKey = request.form['key']
+	except:
+		return json.dumps({'error': 'Key error'}), 401, {'ContentType':'application/json'}
+	
+	if expectedKey == receivedKey:
+		image = request.form['image']
+		bucket = request.form['bucket']
+
+		logging.info('Create Serving URL for ' + image)
+		filename = (bucket + "/" +image)
+		logging.info('Filename is ' + filename)
+
+		gskey = blobstore.create_gs_key("/gs/" + filename)
+		logging.info('gskey is ' + gskey)
+		
+		servingImage = images.get_serving_url(gskey)
+		logging.info('Serving url: ' + servingImage)
+		
+		return(servingImage)
+	else:
+		return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
+	
+
+@resppicturehereicome.route('/unserveurl', methods=['POST'])
+def unserveurl():
+
+	config = ConfigParser.RawConfigParser(allow_no_value=True)
+	config.read('config.ini')
+	
 	expectedKey = config.get("auth", "key")
 	receivedKey = request.form['key']
 	
@@ -49,21 +80,18 @@ def serveurl():
 		image = request.form['image']
 		bucket = request.form['bucket']
 
-		logging.info('Create Serving URL for ' + image)
+		logging.info('Remove Serving URL for ' + image)
 
 		filename = (bucket + "/" +image)
+		logging.info('Filename is ' + filename)
+
 		gskey = blobstore.create_gs_key("/gs/" + filename)
-		servingImage = images.get_serving_url(gskey)
+		logging.info('gskey is ' + gskey)
 
-		logging.info('Serving URL is ' + servingImage)
+		removal = images.delete_serving_url(gskey)
+		logging.info('URL is removed')
 
-		return(servingImage)
+		return("OK")
 	else:
 		return json.dumps({'error': 'No valid key provided'}), 401, {'ContentType':'application/json'}
-	
-
-	
-		
-	
-
 	
