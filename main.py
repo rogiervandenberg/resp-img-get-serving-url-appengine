@@ -59,7 +59,7 @@ def serveurl():
 		gskey = blobstore.create_gs_key("/gs/" + filename)
 		logging.info('gskey is ' + gskey)
 		
-		servingImage = images.get_serving_url(gskey)
+		servingImage = images.get_serving_url(gskey, secure_url=True)
 		logging.info('Serving url: ' + servingImage)
 		
 		return(servingImage)
